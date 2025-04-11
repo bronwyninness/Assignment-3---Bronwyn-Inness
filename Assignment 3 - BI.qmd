@@ -1,0 +1,106 @@
+---
+title: "Assignment 3 - BI"
+format: html
+editor: visual
+---
+
+## Assignment 3
+
+Loading packages and dataset. Data cleaning.
+
+```{r}
+##Loading packages
+library(tidyverse)
+library(haven)
+##Reading in dataset using the 'haven' package
+fourlmm <- read_sav("P6003.A4.sav")
+##Viewing the data
+view(fourlmm)
+##Selecting only the columns specified in the assignment based on: "NOTE: Other variables not needed for this assignment, despite being in the dataset."
+lmmfinal <- select(fourlmm, id, day, swl, tipm.E, tipm.N)
+view(lmmfinal)
+class(lmmfinal$id)
+##The data is already in the 'long' format, so no need to convert it
+##See where exactly NA values are:
+sum(is.na(lmmfinal))
+class(id)
+head(lmmfinal$id)
+colnames(lmmfinal)
+typeof(lmmfinal$id)
+# Convert 'id' to a factor
+lmmfinal$id <- as.factor(lmmfinal$id)
+
+typeof(lmmfinal$id)
+# Convert 'id' to a factor
+lmmfinal$id <- as.factor(lmmfinal$id)
+typeof(lmmfinal$id)
+str(lmmfinal$id)
+typeof(lmmfinal$id)
+class(lmmfinal$id)
+```
+
+Univariate Distributions
+
+```{r}
+library(flexplot)
+library(lme4)
+library(tidyverse)
+##Visualize univariate distributions
+flexplot(swl~1, data = lmmfinal)
+flexplot(tipm.E~1, data = lmmfinal)
+flexplot(tipm.N~1, data = lmmfinal)
+##flexplot(day~1, data = lmmfinal)
+```
+
+Correlations
+
+```{r}
+library(apaTables)
+##creating a correlation table with means and sds
+correlations <- select(lmmfinal, tipm.E, tipm.N, swl)
+table1final <- apa.cor.table(correlations, table.number = 1, filename = "table1final.doc")
+table1final
+```
+
+Step 1: Fit a baseline model
+
+```{r}
+library(flexplot)
+library(lme4)
+library(tidyverse)
+##Outcome = swl, predictors = tipm.E, tipm.N, clustering variable = id
+baseline <- lmer(swl~1+(1|id), data = lmmfinal)
+summary(baseline)
+```
+
+Step 2: Calculate the ICC
+
+```{r}
+icc(baseline)
+```
+
+Step 3: Fit model and test assumptions
+
+```{r}
+##Fitting models
+reduced_test <- lmer(swl~tipm.E+tipm.N+(1|id), data = lmmfinal)
+
+full_test <- lmer(swl~tipm.E+tipm.N+(tipm.E+tipm.N|id), data = lmmfinal)
+##Assumptions
+visualize(full_test, plot = "residuals")
+visualize(full_test, plot = "model")
+##Model comparison 
+model.comparison(reduced_test, full_test)
+##The full model fits better
+```
+
+Step 4: Model Summary
+
+```{r}
+visualize(full_test, plot = "model") 
+
+summary(full_test)
+estimates(full_test)
+```
+
+Table
