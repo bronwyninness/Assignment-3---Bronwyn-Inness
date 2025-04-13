@@ -86,6 +86,8 @@ E_random <- lmer(swl~tipm.E+(tipm.E|id), data = lmmfinal)
 model.comparison(E_fixed, E_random)
 
 N_fixed <- lmer(swl~tipm.E+tipm.N+(1|id), data = lmmfinal)
+model.comparison(E_random, N_fixed)
+
 N_random <- lmer(swl~tipm.E+tipm.N+(tipm.E+tipm.N|id), data = lmmfinal)
 model.comparison(N_fixed, N_random)
 
