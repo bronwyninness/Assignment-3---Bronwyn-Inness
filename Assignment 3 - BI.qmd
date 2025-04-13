@@ -87,7 +87,7 @@ full_test <- lmer(swl~tipm.E+tipm.N+(tipm.E+tipm.N|id), data = lmmfinal)
 ##Assumptions
 visualize(full_test, plot = "residuals")
 visualize(full_test, plot = "model")
-visualize(reduced_test, plot = "model")
+
 ##Model comparison 
 model.comparison(reduced_test, full_test)
 ##The full model fits better
