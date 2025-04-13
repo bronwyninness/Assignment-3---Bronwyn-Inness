@@ -24,12 +24,9 @@ class(lmmfinal$id)
 ##See where exactly NA values are:
 sum(is.na(lmmfinal))
 class(lmmfinal$id)
-# Convert 'id' to a factor
+##Convert 'id' to a factor
 lmmfinal$id <- as.factor(lmmfinal$id)
-
-typeof(lmmfinal$id)
-# Convert 'id' to a factor
-lmmfinal$id <- as.factor(lmmfinal$id)
+##Figuring out if it worked
 typeof(lmmfinal$id)
 str(lmmfinal$id)
 typeof(lmmfinal$id)
@@ -108,7 +105,7 @@ visualize(full_test, plot = "model")
 
 ##Getting summary and estimates
 summary(full_test)
-##estimates(full_test), don't use, gets the weird "two datasets" error, plus we don't actually need it
+estimates(full_test) ##gets the weird "two datasets" error
 
 variance = 2.025 + 0.01983 +0.03510+0.48874
 tipm.Evar <- (0.01983/variance)*100
@@ -126,7 +123,7 @@ detach("package:performance", unload = TRUE)
 LMM Table
 
 ```{r}
-install.packages("sjPlot")
+##install.packages("sjPlot")
 library(sjPlot)
 
 ##Create the table
