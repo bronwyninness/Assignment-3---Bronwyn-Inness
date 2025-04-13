@@ -80,17 +80,20 @@ Step 3: Fit model and test assumptions
 
 ```{r}
 ##Fitting models
-reduced_test <- lmer(swl~tipm.E+tipm.N+(1|id), data = lmmfinal)
+
+E_fixed <- lmer(swl~tipm.E+(1|id), data = lmmfinal)
+E_random <- lmer(swl~tipm.E+(tipm.E|id), data = lmmfinal)
+model.comparison(E_fixed, E_random)
+
+N_fixed <- lmer(swl~tipm.E+tipm.N+(1|id), data = lmmfinal)
+N_random <- lmer(swl~tipm.E+tipm.N+(tipm.E+tipm.N|id), data = lmmfinal)
+model.comparison(N_fixed, N_random)
 
 full_test <- lmer(swl~tipm.E+tipm.N+(tipm.E+tipm.N|id), data = lmmfinal)
 
 ##Assumptions
 visualize(full_test, plot = "residuals")
 visualize(full_test, plot = "model")
-
-##Model comparison 
-model.comparison(reduced_test, full_test)
-##The full model fits better
 ```
 
 Step 4: Model Summary
@@ -103,8 +106,13 @@ visualize(full_test, plot = "model")
 
 ##Getting summary and estimates
 summary(full_test)
-estimates(full_test)
-flexplot::estimates(full_test)
+##estimates(full_test), don't use, gets the weird "two datasets" error, plus we don't actually need it
+
+variance = 2.025 + 0.01983 +0.03510+0.48874
+tipm.Evar <- (0.01983/variance)*100
+tipm.Evar
+(0.03510/variance)*100
+(2.025/variance)*100
 
 #Get traditional R2 estimates
 ##install.packages("performance")
@@ -123,7 +131,8 @@ library(sjPlot)
 table2 <- tab_model(full_test,
           show.re.var = TRUE,     # Show random effects
           show.icc = TRUE,        # Intra-class correlation
-          show.r2 = TRUE,         # R² for fixed and mixed
+          show.r2 = TRUE,
+          show.se = TRUE, # R² for fixed and mixed
           digits = 3,
           dv.labels = "Satisfaction With Life",
           pred.labels = c("(Intercept)", "Extraversion", "Neuroticism"))
@@ -131,9 +140,5 @@ table2 <- tab_model(full_test,
   
 table2
 
-install.packages("flextable")
-library(flextable)
-# Convert tab_model output to a flextable
-ft <- flextable::qflextable(table2)
 
 ```
