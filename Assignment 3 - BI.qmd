@@ -100,20 +100,22 @@ Step 4: Model Summary
 ```{r}
 visualize(full_test, plot = "model") 
 
-##library(lmerTest)
-##detach("package:lmerTest", unload = TRUE)
-
 ##Getting summary and estimates
 summary(full_test)
 estimates(full_test) ##gets the weird "two datasets" error
 
-variance = 2.025 + 0.01983 +0.03510+0.48874
+##Calculating the amount of variance due to the random slopes by variable
+##alculating the total variance
+variance = 2.025 + 0.01983 +0.03510+0.48874 ##would you include residual variance?
+##calculate extraversion
 tipm.Evar <- (0.01983/variance)*100
 tipm.Evar
+##calculate neuroticism
 (0.03510/variance)*100
+##calculate id
 (2.025/variance)*100
 
-#Get traditional R2 estimates
+##R2 estimates
 ##install.packages("performance")
 library(performance)
 r2(full_test)
