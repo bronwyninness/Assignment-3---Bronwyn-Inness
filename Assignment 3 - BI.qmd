@@ -23,10 +23,7 @@ class(lmmfinal$id)
 ##The data is already in the 'long' format, so no need to convert it
 ##See where exactly NA values are:
 sum(is.na(lmmfinal))
-class(id)
-head(lmmfinal$id)
-colnames(lmmfinal)
-typeof(lmmfinal$id)
+class(lmmfinal$id)
 # Convert 'id' to a factor
 lmmfinal$id <- as.factor(lmmfinal$id)
 
@@ -57,7 +54,7 @@ Correlations
 ```{r}
 library(apaTables)
 ##creating a correlation table with means and sds
-correlations <- select(lmmfinal, tipm.E, tipm.N, swl)
+correlations <- select(lmmfinal, id, swl, tipm.E, tipm.N)
 table1final <- apa.cor.table(correlations, table.number = 1, filename = "table1final.doc")
 table1final
 ```
@@ -86,9 +83,11 @@ Step 3: Fit model and test assumptions
 reduced_test <- lmer(swl~tipm.E+tipm.N+(1|id), data = lmmfinal)
 
 full_test <- lmer(swl~tipm.E+tipm.N+(tipm.E+tipm.N|id), data = lmmfinal)
+
 ##Assumptions
 visualize(full_test, plot = "residuals")
 visualize(full_test, plot = "model")
+visualize(reduced_test, plot = "model")
 ##Model comparison 
 model.comparison(reduced_test, full_test)
 ##The full model fits better
@@ -99,8 +98,42 @@ Step 4: Model Summary
 ```{r}
 visualize(full_test, plot = "model") 
 
+##library(lmerTest)
+##detach("package:lmerTest", unload = TRUE)
+
+##Getting summary and estimates
 summary(full_test)
 estimates(full_test)
+flexplot::estimates(full_test)
+
+#Get traditional R2 estimates
+##install.packages("performance")
+library(performance)
+r2(full_test)
+detach("package:performance", unload = TRUE)
 ```
 
-Table
+LMM Table
+
+```{r}
+install.packages("sjPlot")
+library(sjPlot)
+
+##Create the table
+table2 <- tab_model(full_test,
+          show.re.var = TRUE,     # Show random effects
+          show.icc = TRUE,        # Intra-class correlation
+          show.r2 = TRUE,         # R² for fixed and mixed
+          digits = 3,
+          dv.labels = "Satisfaction With Life",
+          pred.labels = c("(Intercept)", "Extraversion", "Neuroticism"))
+)
+  
+table2
+
+install.packages("flextable")
+library(flextable)
+# Convert tab_model output to a flextable
+ft <- flextable::qflextable(table2)
+
+```
