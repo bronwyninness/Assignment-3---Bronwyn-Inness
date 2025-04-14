@@ -131,7 +131,6 @@ table2 <- tab_model(full_test,
           digits = 3,
           dv.labels = "Satisfaction With Life",
           pred.labels = c("(Intercept)", "Extraversion", "Neuroticism"))
-)
   
 table2
 
