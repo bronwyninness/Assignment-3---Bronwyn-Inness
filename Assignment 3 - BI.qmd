@@ -89,7 +89,7 @@ model.comparison(E_random, N_fixed)
 
 ##compare previous model to model with both predictors random slopes
 full_test <- lmer(swl~tipm.E+tipm.N+(tipm.E+tipm.N|id), data = lmmfinal)
-model.comparison(N_fixed, N_random)
+model.comparison(N_fixed, full_test)
 
 ##Assumptions
 visualize(full_test, plot = "residuals")
