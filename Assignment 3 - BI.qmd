@@ -82,14 +82,17 @@ Step 3: Fit model and test assumptions
 E_fixed <- lmer(swl~tipm.E+(1|id), data = lmmfinal)
 E_random <- lmer(swl~tipm.E+(tipm.E|id), data = lmmfinal)
 model.comparison(E_fixed, E_random)
+summary(E_fixed)
+summary(E_random)
 
 ##add neuroticism, fixed
-N_fixed <- lmer(swl~tipm.E+tipm.N+(1|id), data = lmmfinal)
+N_fixed <- lmer(swl~tipm.E+tipm.N+(tipm.E|id), data = lmmfinal)
 model.comparison(E_random, N_fixed)
 
 ##compare previous model to model with both predictors random slopes
 full_test <- lmer(swl~tipm.E+tipm.N+(tipm.E+tipm.N|id), data = lmmfinal)
 model.comparison(N_fixed, full_test)
+summary(N_fixed)
 
 ##Assumptions
 visualize(full_test, plot = "residuals")
